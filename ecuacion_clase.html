@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!-- 1) DOCTYPE le dice al navegador: "esto es HTML moderno (HTML5)". -->
+<html lang="es">
+<!-- 2) <html> envuelve TODA la página. lang="es" indica que está en español
+        (ayuda a Google y a los lectores de pantalla). -->
+
+<head>
+  <!-- 3) <head> = información SOBRE la página. Nada de esto se ve directamente. -->
+  <meta charset="UTF-8">
+  <!-- UTF-8 permite tildes y la ñ sin que salgan símbolos raros. -->
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Esta línea hace que la página se vea bien en el celular (diseño responsive). -->
+
+  <title>gclemen · Matemáticas para mis estudiantes</title>
+  <!-- El texto que aparece en la pestaña del navegador y en Google. -->
+
+  <meta name="description" content="Guías, ejercicios y lecciones interactivas de matemáticas del profe Gustavo Clemen.">
+  <!-- La descripción que Google muestra debajo del título. -->
+
+  <link rel="stylesheet" href="estilos.css">
+  <!-- Conecta este HTML con el archivo de estilos (colores, tamaños, posiciones). -->
+</head>
+
+<body>
+  <!-- 4) <body> = todo lo que SÍ se ve en la pantalla. -->
+
+  <header class="encabezado">
+    <!-- <header> es la parte de arriba: logo y menú. -->
+    <a href="index.html" class="logo">gclemen<span>.org</span></a>
+    <nav>
+      <!-- <nav> agrupa los enlaces de navegación. Cada href="#..." salta a una sección. -->
+      <a href="#grados">Grados</a>
+      <a href="#recursos">Recursos</a>
+      <a href="#sobre-mi">Sobre mí</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- <main> contiene el contenido principal de la página. -->
+
+    <section class="portada">
+      <!-- <section> agrupa una parte de la página con un mismo tema. -->
+      <h1>Matemáticas paso a paso</h1>
+      <!-- <h1> es el título más importante. Solo debe haber uno por página. -->
+      <p>Guías, ejercicios y lecciones interactivas para que practiques a tu ritmo, desde el celular o el computador.</p>
+      <a href="#grados" class="boton">Empezar</a>
+    </section>
+
+    <section id="grados">
+      <!-- id="grados" es el "nombre" de esta sección; el menú lo usa para saltar aquí. -->
+      <h2>Elige tu grado</h2>
+      <div class="tarjetas">
+        <!-- Cada <article> es una tarjeta. Para agregar un grado, copia una tarjeta completa. -->
+        <article class="tarjeta">
+          <h3>Sexto</h3>
+          <p>Números naturales, fracciones y geometría básica.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>Séptimo</h3>
+          <p>Números enteros, proporcionalidad y ecuaciones sencillas.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>Octavo</h3>
+          <p>Expresiones algebraicas, productos notables y factorización.</p>
+        </article>
+        <article class="tarjeta">
+          <h3>Noveno</h3>
+          <p>Sistemas de ecuaciones, funciones y estadística.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="recursos">
+      <h2>Recursos</h2>
+      <ul class="lista">
+        <!-- <ul> es una lista con viñetas; cada <li> es un elemento de la lista. -->
+        <li>📄 Guías de clase en PDF <em>(muy pronto)</em></li>
+        <li>🧮 Lecciones interactivas <em>(muy pronto)</em></li>
+        <li>🎥 Videos de mi canal de YouTube <em>(muy pronto)</em></li>
+      </ul>
+    </section>
+
+    <section id="sobre-mi">
+      <h2>Sobre mí</h2>
+      <p>Soy Gustavo Clemen, docente de matemáticas e ingeniero electrónico. Creé este sitio para que mis estudiantes tengan un lugar donde repasar y practicar cuando lo necesiten.</p>
+    </section>
+
+  </main>
+
+  <footer class="pie">
+    <!-- <footer> es la parte de abajo de la página. -->
+    <p>© 2026 Gustavo Clemen · gclemen.org</p>
+  </footer>
+
+</body>
+</html>
