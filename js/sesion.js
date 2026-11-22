@@ -13,7 +13,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 import {
   initializeFirestore, persistentLocalCache, persistentMultipleTabManager,
-  doc, getDoc, setDoc, collection, getDocs, serverTimestamp
+  doc, getDoc, setDoc, collection, getDocs, serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
 import { firebaseConfig, DOMINIO_ESTUDIANTES } from "./firebase-config.js";
@@ -97,7 +97,8 @@ export function alCambiarSesion(funcion) {
 export function exigirSesion(funcion) {
   return alCambiarSesion((usuario) => {
     if (!usuario) {
-      const volver = encodeURIComponent(location.pathname);
+      // Guardamos la página (y su ?u=...) para volver después de ingresar.
+      const volver = encodeURIComponent(location.pathname + location.search);
       location.href = `/ingresar.html?volver=${volver}`;
     } else {
       funcion(usuario);
@@ -117,6 +118,36 @@ export async function guardarProgreso(leccionId, datos) {
   const ref = doc(db, "progreso", user.uid, "lecciones", leccionId);
   // merge: true -> actualiza los campos sin borrar los demás
   await setDoc(ref, { ...datos, actualizado: serverTimestamp() }, { merge: true });
+  await registrarDia();
+}
+
+// --- Racha: días seguidos practicando --------------------------
+// Se guarda en un documento especial "_racha" dentro de la misma
+// colección de lecciones (así las reglas de Firestore no cambian).
+// Guarda una lista de fechas "2026-11-22"; arrayUnion no repite fechas.
+function hoy() {
+  return new Date().toLocaleDateString("en-CA");   // formato AAAA-MM-DD, hora local
+}
+
+async function registrarDia() {
+  const user = auth.currentUser;
+  if (!user) return;
+  const ref = doc(db, "progreso", user.uid, "lecciones", "_racha");
+  await setDoc(ref, { dias: arrayUnion(hoy()) }, { merge: true });
+}
+
+// Cuenta cuántos días seguidos hay, terminando hoy o ayer
+// (si no ha practicado hoy, la racha de ayer todavía cuenta).
+export function calcularRacha(dias = []) {
+  const practicados = new Set(dias);
+  const fecha = new Date();
+  if (!practicados.has(hoy())) fecha.setDate(fecha.getDate() - 1);
+  let racha = 0;
+  while (practicados.has(fecha.toLocaleDateString("en-CA"))) {
+    racha++;
+    fecha.setDate(fecha.getDate() - 1);
+  }
+  return racha;
 }
 
 // Devuelve una lista con el progreso de todas las lecciones del estudiante.
@@ -124,5 +155,19 @@ export async function leerMiProgreso() {
   const user = auth.currentUser;
   if (!user) return [];
   const snaps = await getDocs(collection(db, "progreso", user.uid, "lecciones"));
-  return snaps.docs.map((d) => ({ leccion: d.id, ...d.data() }));
+  return snaps.docs
+    .filter((d) => !d.id.startsWith("_"))         // "_racha" no es una lección
+    .map((d) => ({ leccion: d.id, ...d.data() }));
+}
+
+// Devuelve la lista de días practicados (para la racha).
+export async function leerMisDias() {
+  const user = auth.currentUser;
+  if (!user) return [];
+  try {
+    const snap = await getDoc(doc(db, "progreso", user.uid, "lecciones", "_racha"));
+    return snap.exists() ? snap.data().dias || [] : [];
+  } catch (e) {
+    return [];                                    // sin conexión y sin caché
+  }
 }

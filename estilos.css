@@ -1,31 +1,33 @@
 /* =========================================================
-   estilos.css — aquí se decide CÓMO se ve la página.
+   estilos.css — aquí se decide CÓMO se ve el sitio.
    El HTML dice QUÉ hay; el CSS dice de qué color, tamaño y dónde.
    Formato:  selector { propiedad: valor; }
 
-   Estilo: letra gruesa, un solo color de acento (rojo naranja)
-   y bloques con borde negro y sombra "dura" (sin difuminar).
-   Todas las páginas del sitio usan este mismo archivo.
+   Estilo (según el diseño de Claude Design):
+   - Plano: sin esquinas redondeadas ni sombras.
+   - Un solo color de acento: rojo.
+   - Letra gruesa para títulos, etiquetas pequeñas en MAYÚSCULAS.
+   - Barra de navegación fija abajo (Inicio, Progreso, Perfil).
    ========================================================= */
 
-/* 1) Variables: colores y medidas guardados con un nombre.
+/* 1) Variables: colores guardados con un nombre.
       Si cambias un valor aquí, cambia en todo el sitio. */
 :root {
-  --acento: #ff4f1f;        /* rojo naranja: botones, detalles */
-  --acento-suave: #ffe3d8;  /* versión clarita del acento */
-  --tinta: #141414;         /* casi negro: texto y bordes */
-  --gris: #5c5c5c;
-  --fondo: #fff7ec;         /* crema, cansa menos que el blanco puro */
+  --rojo: #e5341b;          /* acento: botones, números, barras */
+  --rojo-suave: #fde3dc;    /* fondo de la etiqueta "6° grado" */
+  --tinta: #1b1b1b;         /* texto principal y bordes */
+  --gris: #6b6b6b;          /* textos secundarios */
+  --gris-claro: #c9c6c3;    /* líneas finas y barras vacías */
+  --fondo: #f4f3f1;         /* fondo de la página */
+  --caja: #dedad7;          /* fondo de la tarjeta de nivel */
   --blanco: #ffffff;
-  --verde: #1f9d55;
-  --borde: 3px solid var(--tinta);
-  --sombra: 4px 4px 0 var(--tinta);   /* sombra dura: 4px a la derecha y abajo */
-  --radio: 14px;
+  --verde: #1f8a4c;
+  --ancho: 520px;           /* ancho máximo: se ve como app también en PC */
 }
 
 /* 2) Reglas generales */
 * {
-  box-sizing: border-box;  /* hace que los tamaños sean más fáciles de calcular */
+  box-sizing: border-box;   /* tamaños más fáciles de calcular */
 }
 
 body {
@@ -33,169 +35,401 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--tinta);
   background: var(--fondo);
-  line-height: 1.55;
-}
-
-h1, h2, h3 {
-  line-height: 1.1;
-  font-weight: 900;        /* 900 = lo más grueso que tenga la letra */
-  letter-spacing: -0.02em; /* junta un poquito las letras de los títulos */
+  line-height: 1.45;
 }
 
 a {
-  color: var(--tinta);
-}
-
-/* 3) Encabezado (logo + botón de ingreso) */
-.encabezado {
-  position: sticky;                 /* se queda arriba al bajar por la página */
-  top: 0;
-  z-index: 10;
-  display: flex;                    /* pone los elementos en fila */
-  justify-content: space-between;   /* logo a la izquierda, botón a la derecha */
-  align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
-  background: var(--fondo);
-  border-bottom: var(--borde);
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: 900;
-  text-decoration: none;            /* quita el subrayado del enlace */
-}
-
-.logo span {
-  color: var(--acento);
-}
-
-/* Botón de ingreso del encabezado. Si hay sesión abierta,
-   menu-sesion.js le cambia el texto por "Hola, Juan". */
-.boton-sesion {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: var(--borde);
-  border-radius: 999px;             /* 999px = forma de píldora */
-  background: var(--acento);
-  color: var(--blanco);
-  font-weight: 800;
+  color: inherit;
   text-decoration: none;
-  box-shadow: 3px 3px 0 var(--tinta);
+}
+
+h1, h2, h3 {
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* El contenido de cada pantalla. padding-bottom deja espacio
+   para que la barra de abajo no tape lo último. */
+.pantalla {
+  max-width: var(--ancho);
+  margin: 0 auto;
+  padding: 18px 20px 110px;
+}
+
+/* 3) Barra superior: GCLEMEN.ORG y la etiqueta del grado */
+.barra-superior {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.marca {
+  color: var(--rojo);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chip {
+  padding: 4px 10px;
+  background: var(--rojo-suave);
+  color: var(--rojo);
+  font-size: 13px;
+  font-weight: 600;
+  border: 0;
+  font-family: inherit;
+}
+
+/* 4) Saludo y título grande */
+.saludo {
+  color: var(--gris);
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.titulo {
+  font-size: clamp(30px, 8.5vw, 40px);
+  font-weight: 800;
+  margin-bottom: 22px;
+}
+
+/* Etiqueta pequeña en mayúsculas (CONTINÚA DONDE IBAS) */
+.rotulo {
+  margin: 26px 0 10px;
+  color: var(--gris);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* 5) Tarjeta de nivel (fondo gris) */
+.tarjeta-nivel {
+  display: block;
+  padding: 16px 16px 14px;
+  background: var(--caja);
+}
+
+.tarjeta-nivel .fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.tarjeta-nivel h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.tarjeta-nivel small {
+  display: block;
+  color: #4a4a4a;
+  font-size: 13px;
+}
+
+.racha {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--rojo);
+  font-weight: 800;
+  font-size: 17px;
   white-space: nowrap;
 }
 
-.boton-sesion.conectado {           /* cuando ya ingresó */
-  background: var(--blanco);
-  color: var(--tinta);
+.racha.apagada {                 /* sin racha: gris */
+  color: var(--gris);
 }
 
-.boton-sesion .inicial {            /* circulito con la inicial del nombre */
+/* Barra de avance. La parte de color es el <div> de adentro;
+   su ancho (width) se pone desde JavaScript. */
+.avance {
+  height: 7px;
+  margin: 14px 0 8px;
+  background: var(--gris-claro);
+}
+
+.avance div {
+  height: 100%;
+  width: 0;
+  background: var(--rojo);
+  transition: width 0.6s;
+}
+
+.avance.delgada {
+  height: 4px;
+  margin: 8px 0 0;
+}
+
+.avance.delgada div {
+  background: var(--tinta);
+}
+
+.nota {
+  color: #4a4a4a;
+  font-size: 12px;
+}
+
+/* 6) Tarjeta "Continúa donde ibas" (borde negro) */
+.continuar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 2px solid var(--tinta);
+  background: var(--fondo);
+}
+
+.cuadro-icono {
+  flex: none;
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: var(--acento);
+  width: 40px;
+  height: 40px;
+  background: var(--tinta);
   color: var(--blanco);
-  font-size: 14px;
 }
 
-/* 4) Contenido principal */
-main {
-  max-width: 960px;                 /* no deja que el texto se estire demasiado */
-  margin: 0 auto;                   /* centra el contenido */
-  padding: 0 18px;
-}
-
-section {
-  padding: 28px 0;
-}
-
-h2 {
-  font-size: 28px;
-  margin: 0 0 16px;
-}
-
-/* Etiqueta pequeña en mayúsculas encima de un título */
-.etiqueta {
-  display: inline-block;
-  margin-bottom: 8px;
-  padding: 2px 10px;
-  border: 2px solid var(--tinta);
-  border-radius: 999px;
-  background: var(--acento-suave);
-  font-size: 13px;
-  font-weight: 800;
+.continuar .tipo {
+  color: var(--rojo);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-/* 5) Bloque: la "caja" con borde y sombra que se usa en todo el sitio */
-.bloque {
-  background: var(--blanco);
-  border: var(--borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: 18px;
+.continuar strong {
+  display: block;
+  font-size: 17px;
 }
 
-/* 6) Portada */
-.portada {
-  padding: 36px 0 20px;
+.continuar .flecha {
+  margin-left: auto;
 }
 
-.portada h1 {
-  font-size: clamp(40px, 11vw, 68px);  /* el título se adapta al tamaño de la pantalla */
-  margin: 0 0 14px;
-}
-
-.portada h1 em {
-  font-style: normal;
-  color: var(--acento);
-}
-
-.portada p {
-  font-size: 18px;
-  color: var(--gris);
-  max-width: 560px;
-  margin: 0 0 24px;
-}
-
-/* 7) Botones grandes */
-.boton {
-  display: inline-block;
-  padding: 14px 28px;
-  border: var(--borde);
-  border-radius: var(--radio);
-  background: var(--acento);
+/* 7) Reto de la semana (bloque rojo) */
+.reto {
+  display: block;
+  margin-top: 22px;
+  padding: 16px 16px 14px;
+  background: var(--rojo);
   color: var(--blanco);
-  box-shadow: var(--sombra);
-  font: inherit;
-  font-size: 18px;
+}
+
+.reto .fila {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.reto h2 {
+  margin: 6px 0 6px;
+  font-size: 24px;
   font-weight: 800;
+}
+
+.reto small {
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+/* 8) Encabezado de sección con línea gruesa (Unidades) */
+.encabezado-seccion {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 26px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--tinta);
+}
+
+.encabezado-seccion h2 {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.encabezado-seccion small {
+  color: var(--gris);
+  font-size: 13px;
+}
+
+/* 9) Lista de unidades: número grande rojo + título + barra */
+.unidades {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.unidad {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 4px 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.unidad .num {
+  color: var(--rojo);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.unidad h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.unidad p {
+  margin: 4px 0 0;
+  color: var(--gris);
+  font-size: 13px;
+}
+
+.unidad .conteo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.unidad .conteo .avance {
+  flex: 1;
+}
+
+/* 10) Lista de materiales (pantalla de unidad) */
+.material {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.material .cuadro-icono.hecho {
+  background: var(--verde);
+}
+
+.material .tipo {
+  color: var(--rojo);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.material strong {
+  display: block;
+}
+
+.material .estado {
+  margin-left: auto;
+  color: var(--gris);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+
+/* 11) Insignias (pantalla de progreso) */
+.insignias {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.insignia {
+  padding: 14px 8px;
+  border: 2px solid var(--tinta);
   text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: transform 0.08s, box-shadow 0.08s;
+  font-size: 12px;
+  font-weight: 700;
 }
 
-/* Al tocarlo, el botón "se hunde": se mueve hacia la sombra */
-.boton:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0 0 0 var(--tinta);
+.insignia .emoji {
+  display: block;
+  font-size: 28px;
+  margin-bottom: 4px;
 }
 
-.boton.secundario {
-  background: var(--blanco);
-  color: var(--tinta);
+.insignia.bloqueada {
+  border-color: var(--gris-claro);
+  color: var(--gris);
 }
 
-.boton.ancho {
+.insignia.bloqueada .emoji {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
+/* Cifras grandes (XP, racha) */
+.cifras {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.cifra {
+  padding: 14px;
+  background: var(--caja);
+}
+
+.cifra .valor {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cifra .nombre {
+  color: #4a4a4a;
+  font-size: 13px;
+}
+
+/* 12) Perfil */
+.dato {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gris-claro);
+}
+
+.dato span {
+  color: var(--gris);
+}
+
+/* 13) Botones */
+.boton {
   display: block;
   width: 100%;
+  padding: 15px;
+  border: 2px solid var(--rojo);
+  background: var(--rojo);
+  color: var(--blanco);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 800;
+  text-align: center;
+  cursor: pointer;
+}
+
+.boton:active {
+  opacity: 0.85;
 }
 
 .boton:disabled {
@@ -203,132 +437,20 @@ h2 {
   cursor: wait;
 }
 
-/* 8) Franja de progreso en el inicio (solo con sesión abierta) */
-.franja-progreso {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 24px;
-  text-decoration: none;
-}
-
-.franja-progreso[hidden] {
-  display: none;                    /* hidden debe ganarle al display: flex */
-}
-
-.franja-progreso strong {
-  display: block;
-  font-size: 18px;
-}
-
-.franja-progreso small {
-  color: var(--gris);
-}
-
-.chip-xp {
-  padding: 6px 12px;
-  border: 2px solid var(--tinta);
-  border-radius: 999px;
-  background: var(--acento);
-  color: var(--blanco);
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-/* 9) Tarjetas de grados */
-.tarjetas {
-  display: grid;                                                /* cuadrícula */
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));  /* 1 columna en celular, 2-4 en PC */
-  gap: 16px;
-}
-
-.tarjeta {
-  position: relative;
-  background: var(--blanco);
-  border: var(--borde);
-  border-radius: var(--radio);
-  box-shadow: var(--sombra);
-  padding: 18px 18px 18px 84px;     /* espacio a la izquierda para el número */
-  min-height: 92px;
-}
-
-.tarjeta .numero {                  /* el cuadro grande con el número del grado */
-  position: absolute;
-  left: 16px;
-  top: 16px;
-  display: grid;
-  place-items: center;
-  width: 54px;
-  height: 54px;
-  border: var(--borde);
-  border-radius: 12px;
-  background: var(--acento);
-  color: var(--blanco);
-  font-size: 26px;
-  font-weight: 900;
-}
-
-.tarjeta h3 {
-  margin: 0 0 4px;
-  font-size: 22px;
-}
-
-.tarjeta p {
-  margin: 0;
-  color: var(--gris);
-}
-
-/* 10) Lista de recursos */
-.lista {
-  list-style: none;     /* quita las viñetas normales (usamos emojis) */
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 12px;
-}
-
-.lista li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--blanco);
-  border: var(--borde);
-  border-radius: var(--radio);
-  padding: 14px 16px;
-  font-weight: 700;
-}
-
-.lista .icono {
-  font-size: 24px;
-}
-
-.lista em {
-  margin-left: auto;    /* empuja "pronto" hacia la derecha */
-  padding: 2px 10px;
-  border-radius: 999px;
-  background: var(--acento-suave);
+.boton.secundario {
+  background: transparent;
+  border-color: var(--tinta);
   color: var(--tinta);
-  font-size: 13px;
-  font-style: normal;
 }
 
-/* 11) Formularios (página de ingreso) */
-.pagina-centrada {
-  max-width: 420px;
-  margin: 0 auto;
-  padding: 28px 18px 40px;
+/* 14) Página de ingreso */
+.ingreso .titulo {
+  margin-bottom: 8px;
 }
 
-.pagina-centrada h1 {
-  font-size: 40px;
-  margin: 0 0 6px;
-}
-
-.sub {
-  margin: 0 0 22px;
+.ingreso .sub {
+  margin: 0 0 26px;
   color: var(--gris);
-  font-size: 17px;
 }
 
 .campo {
@@ -338,14 +460,18 @@ h2 {
 .campo label {
   display: block;
   margin-bottom: 6px;
-  font-weight: 800;
+  color: var(--gris);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .campo input {
   width: 100%;
   padding: 14px;
-  border: var(--borde);
-  border-radius: 12px;
+  border: 2px solid var(--tinta);
+  border-radius: 0;
   background: var(--blanco);
   font: inherit;
   font-size: 22px;
@@ -353,9 +479,8 @@ h2 {
 }
 
 .campo input:focus {
-  outline: none;
-  box-shadow: 0 0 0 4px var(--acento-suave), var(--sombra);
-  border-color: var(--acento);
+  outline: 3px solid var(--rojo-suave);
+  border-color: var(--rojo);
 }
 
 #pin {
@@ -365,112 +490,75 @@ h2 {
 .mensaje {
   min-height: 1.5em;
   margin-top: 14px;
-  color: #c4161c;
+  color: var(--rojo);
   font-weight: 700;
   text-align: center;
 }
 
 .ayuda {
-  margin-top: 22px;
-  color: var(--gris);
-  text-align: center;
-}
-
-/* 12) Mi cuenta */
-.perfil {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.avatar {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
-  border: var(--borde);
-  border-radius: 50%;
-  background: var(--acento);
-  color: var(--blanco);
-  font-size: 30px;
-  font-weight: 900;
-}
-
-.perfil h1 {
-  margin: 0;
-  font-size: 30px;
-}
-
-.perfil small {
-  color: var(--gris);
-  font-weight: 700;
-}
-
-.cifras {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.cifra .valor {
-  font-size: 36px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.cifra .nombre {
-  color: var(--gris);
-  font-weight: 700;
-}
-
-.barra {                            /* barra de avance hacia el siguiente nivel */
-  height: 18px;
-  margin-top: 12px;
-  border: var(--borde);
-  border-radius: 999px;
-  background: var(--blanco);
-  overflow: hidden;
-}
-
-.barra div {
-  height: 100%;
-  width: 0;
-  background: var(--acento);
-  transition: width 0.6s;
-}
-
-.lecciones {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lecciones li {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px 0;
-  border-bottom: 2px dashed #d8d0c4;
-  font-weight: 700;
-}
-
-.lecciones li:last-child {
-  border-bottom: 0;
-}
-
-.lecciones .hecha {
-  color: var(--verde);
-}
-
-/* 13) Pie de página */
-.pie {
-  margin-top: 30px;
-  padding: 24px;
-  border-top: var(--borde);
-  text-align: center;
+  margin-top: 26px;
   color: var(--gris);
   font-size: 14px;
+  text-align: center;
+}
+
+/* 15) Barra de navegación de abajo */
+.nav-inferior {
+  position: fixed;                  /* queda pegada abajo siempre */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: var(--fondo);
+  border-top: 1px solid var(--gris-claro);
+  padding-bottom: env(safe-area-inset-bottom);  /* espacio en celulares sin botones */
+}
+
+.nav-inferior .contenedor {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: var(--ancho);
+  margin: 0 auto;
+}
+
+.nav-inferior a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 0 12px;
+  border-top: 3px solid transparent;   /* la rayita roja de la pestaña activa */
+  margin-top: -1px;
+  color: #4a4a4a;
+  font-size: 12px;
   font-weight: 600;
+}
+
+.nav-inferior a.activo {
+  color: var(--rojo);
+  border-top-color: var(--rojo);
+}
+
+/* Aviso de "sin conexión" arriba de la barra */
+.sin-conexion {
+  position: fixed;
+  left: 50%;
+  bottom: 74px;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: var(--tinta);
+  color: var(--blanco);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Mientras carga, se oculta lo que depende de los datos */
+.cargando [data-datos] {
+  visibility: hidden;
+}
+
+/* Texto de ejemplo de los campos (G7-014): más claro para que no
+   parezca que ya está escrito */
+.campo input::placeholder {
+  color: #bdb8b3;
 }

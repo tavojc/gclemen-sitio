@@ -2,24 +2,26 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fff7ec">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f3f1">
   <title>Ingresar — gclemen.org</title>
-  <!-- Todos los estilos están ahora en estilos.css (sección 11). -->
+  <meta name="description" content="Matemáticas con el profe Gustavo Clemen. Ingresa con tu código y PIN.">
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
+  <!-- Todas las demás páginas mandan aquí si no hay sesión abierta. -->
+  <main class="pantalla ingreso">
 
-  <header class="encabezado">
-    <a href="/" class="logo">gclemen<span>.org</span></a>
-  </header>
+    <div class="barra-superior">
+      <span class="marca">gclemen.org</span>
+      <span class="chip">Estudiantes</span>
+    </div>
 
-  <main class="pagina-centrada">
-    <span class="etiqueta">Estudiantes</span>
-    <h1>Ingresar</h1>
+    <div class="saludo">Matemáticas con el profe Gustavo</div>
+    <h1 class="titulo">Ingresar</h1>
     <p class="sub">Escribe el código y el PIN que te dio el profe.</p>
 
-    <form id="formulario" class="bloque">
+    <form id="formulario">
       <div class="campo">
         <label for="codigo">Código</label>
         <!-- autocapitalize: el celular pone mayúsculas solo -->
@@ -30,25 +32,27 @@
       <div class="campo">
         <label for="pin">PIN</label>
         <!-- inputmode="numeric": el celular muestra el teclado de números -->
-        <input id="pin" type="password" placeholder="••••••"               inputmode="numeric" autocomplete="current-password" required>
+        <input id="pin" type="password" placeholder="••••••"
+               inputmode="numeric" autocomplete="current-password" required>
       </div>
 
-      <button id="boton" class="boton ancho" type="submit">Entrar</button>
+      <button id="boton" class="boton" type="submit">Entrar</button>
       <div id="mensaje" class="mensaje" role="alert"></div>
     </form>
 
-    <p class="ayuda">¿Olvidaste tu PIN? Pídele al profe uno nuevo.<br>
-      <a href="/">Volver al inicio sin ingresar</a></p>
+    <p class="ayuda">¿Olvidaste tu PIN? Pídele al profe uno nuevo.</p>
   </main>
 
   <script type="module">
     import { ingresar, alCambiarSesion } from "./js/sesion.js";
 
-    // A dónde ir después de entrar (por defecto, "Mi cuenta").
-    const volver = new URLSearchParams(location.search).get("volver") || "/mi-cuenta.html";
+    // A dónde ir después de entrar: la página que pidió el ingreso, o el inicio.
+    // Solo aceptamos rutas de este mismo sitio (que empiecen con "/").
+    let volver = new URLSearchParams(location.search).get("volver") || "/";
+    if (!volver.startsWith("/") || volver.startsWith("//")) volver = "/";
 
     // Si ya tiene la sesión abierta en este celular, no le pedimos nada.
-    alCambiarSesion((usuario) => { if (usuario) location.href = volver; });
+    alCambiarSesion((usuario) => { if (usuario) location.replace(volver); });
 
     const formulario = document.getElementById("formulario");
     const boton = document.getElementById("boton");

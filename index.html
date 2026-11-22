@@ -1,119 +1,137 @@
 <!DOCTYPE html>
-<!-- 1) DOCTYPE le dice al navegador: "esto es HTML moderno (HTML5)". -->
 <html lang="es">
-<!-- 2) <html> envuelve TODA la página. lang="es" indica que está en español
-        (ayuda a Google y a los lectores de pantalla). -->
-
 <head>
-  <!-- 3) <head> = información SOBRE la página. Nada de esto se ve directamente. -->
   <meta charset="UTF-8">
-  <!-- UTF-8 permite tildes y la ñ sin que salgan símbolos raros. -->
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Esta línea hace que la página se vea bien en el celular (diseño responsive). -->
-
-  <title>gclemen · Matemáticas para mis estudiantes</title>
-  <!-- El texto que aparece en la pestaña del navegador y en Google. -->
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f3f1">
+  <title>gclemen · Matemáticas</title>
   <meta name="description" content="Guías, ejercicios y lecciones interactivas de matemáticas del profe Gustavo Clemen.">
-  <!-- La descripción que Google muestra debajo del título. -->
-
-  <meta name="theme-color" content="#fff7ec">
-  <!-- Color de la barra del navegador en el celular. -->
-
   <link rel="stylesheet" href="estilos.css">
-  <!-- Conecta este HTML con el archivo de estilos (colores, tamaños, posiciones). -->
 </head>
 
-<body>
-  <!-- 4) <body> = todo lo que SÍ se ve en la pantalla. -->
+<!-- class="cargando": oculta los datos hasta que lleguen de Firebase.
+     Si no hay sesión, app.js manda a ingresar.html. -->
+<body class="cargando">
+  <main class="pantalla">
 
-  <header class="encabezado">
-    <!-- <header> es la parte de arriba: logo y botón de ingreso. -->
-    <a href="/" class="logo">gclemen<span>.org</span></a>
+    <!-- Barra superior -->
+    <div class="barra-superior">
+      <span class="marca">gclemen.org</span>
+      <span class="chip" id="chip-grado" data-datos>6° grado</span>
+    </div>
 
-    <!-- Botón de ingreso. Si el estudiante ya entró, js/menu-sesion.js
-         lo cambia por su nombre y lo lleva a "Mi cuenta". -->
-    <a id="boton-sesion" class="boton-sesion" href="/ingresar.html">Ingresar</a>
-  </header>
+    <!-- Saludo y título -->
+    <div class="saludo" data-datos id="saludo">Hola</div>
+    <h1 class="titulo" data-datos id="titulo">Matemáticas</h1>
 
-  <main>
-    <!-- <main> contiene el contenido principal de la página. -->
-
-    <section class="portada">
-      <!-- <section> agrupa una parte de la página con un mismo tema. -->
-      <span class="etiqueta">Profe Gustavo · Matemáticas</span>
-      <h1>Matemáticas <em>paso a paso</em></h1>
-      <!-- <h1> es el título más importante. Solo debe haber uno por página.
-           <em> resalta una parte; en estilos.css le damos el color de acento. -->
-      <p>Guías, ejercicios y lecciones interactivas para que practiques a tu ritmo, desde el celular o el computador.</p>
-      <a href="#grados" class="boton">Empezar</a>
-
-      <!-- Franja de progreso: está oculta (hidden) y solo aparece
-           si hay sesión abierta. La llena js/menu-sesion.js. -->
-      <a id="franja-progreso" class="bloque franja-progreso" href="/mi-cuenta.html" hidden>
-        <span>
-          <strong id="franja-nombre">Hola</strong>
-          <small id="franja-nivel">Nivel 1</small>
-        </span>
-        <span class="chip-xp" id="franja-xp">0 XP</span>
-      </a>
-    </section>
-
-    <section id="grados">
-      <!-- id="grados" es el "nombre" de esta sección; el botón Empezar salta aquí. -->
-      <h2>Elige tu grado</h2>
-      <div class="tarjetas">
-        <!-- Cada <article> es una tarjeta. Para agregar un grado, copia una tarjeta completa. -->
-        <article class="tarjeta">
-          <span class="numero">6°</span>
-          <h3>Sexto</h3>
-          <p>Números naturales, fracciones y geometría básica.</p>
-        </article>
-        <article class="tarjeta">
-          <span class="numero">7°</span>
-          <h3>Séptimo</h3>
-          <p>Números enteros, proporcionalidad y ecuaciones sencillas.</p>
-        </article>
-        <article class="tarjeta">
-          <span class="numero">8°</span>
-          <h3>Octavo</h3>
-          <p>Expresiones algebraicas, productos notables y factorización.</p>
-        </article>
-        <article class="tarjeta">
-          <span class="numero">9°</span>
-          <h3>Noveno</h3>
-          <p>Sistemas de ecuaciones, funciones y estadística.</p>
-        </article>
+    <!-- Tarjeta de nivel: toca para ver el progreso -->
+    <a class="tarjeta-nivel" href="/progreso.html" data-datos>
+      <div class="fila">
+        <div>
+          <h2 id="nivel">Nivel 1</h2>
+          <small id="nivel-detalle">Principiante</small>
+        </div>
+        <span class="racha" id="racha"></span>
       </div>
-    </section>
+      <div class="avance"><div id="barra-nivel"></div></div>
+      <div class="nota" id="nivel-nota"></div>
+    </a>
 
-    <section id="recursos">
-      <h2>Recursos</h2>
-      <ul class="lista">
-        <!-- <ul> es una lista; cada <li> es un elemento de la lista. -->
-        <li><span class="icono">📄</span> Guías de clase en PDF <em>Pronto</em></li>
-        <li><span class="icono">🧮</span> Lecciones interactivas <em>Pronto</em></li>
-        <li><span class="icono">🎥</span> Videos de mi canal de YouTube <em>Pronto</em></li>
-      </ul>
-    </section>
+    <!-- Continúa donde ibas -->
+    <div class="rotulo">Continúa donde ibas</div>
+    <a class="continuar" id="continuar" data-datos>
+      <span class="cuadro-icono" id="continuar-icono"></span>
+      <span>
+        <span class="tipo" id="continuar-tipo"></span>
+        <strong id="continuar-titulo"></strong>
+      </span>
+      <span class="flecha" id="continuar-flecha"></span>
+    </a>
 
-    <section id="sobre-mi">
-      <h2>Sobre mí</h2>
-      <div class="bloque">
-        <p style="margin:0">Soy Gustavo Clemen, docente de matemáticas e ingeniero electrónico. Creé este sitio para que mis estudiantes tengan un lugar donde repasar y practicar cuando lo necesiten.</p>
-      </div>
-    </section>
+    <!-- Reto de la semana -->
+    <a class="reto" id="reto" data-datos>
+      <div class="fila"><span>Reto de la semana</span><span id="reto-xp"></span></div>
+      <h2 id="reto-titulo"></h2>
+      <small id="reto-detalle"></small>
+    </a>
+
+    <!-- Unidades del grado -->
+    <div class="encabezado-seccion">
+      <h2>Unidades</h2>
+      <small id="unidades-conteo" data-datos></small>
+    </div>
+    <ul class="unidades" id="unidades" data-datos></ul>
 
   </main>
 
-  <footer class="pie">
-    <!-- <footer> es la parte de abajo de la página. -->
-    <p>© 2026 Gustavo Clemen · gclemen.org</p>
-  </footer>
+  <script type="module">
+    import { iniciarPantalla, ICONOS, primerNombre, cambiarGradoDocente } from "./js/app.js";
+    import { TIPOS, GRADOS } from "./js/contenido.js";
 
-  <!-- El script va al final para que la página aparezca primero.
-       type="module" permite usar import/export entre archivos .js -->
-  <script type="module" src="js/menu-sesion.js"></script>
+    const $ = (id) => document.getElementById(id);   // atajo para no escribir tanto
+
+    iniciarPantalla("inicio", (usuario, r) => {
+      // Encabezado
+      $("saludo").textContent = `Hola, ${primerNombre(usuario)}`;
+      $("titulo").textContent = `Matemáticas ${r.grado}°`;
+      $("chip-grado").textContent = `${r.grado}° grado`;
+
+      // El docente puede cambiar de grado tocando la etiqueta
+      if (usuario.esDocente) {
+        const grados = Object.keys(GRADOS).map(Number);
+        $("chip-grado").textContent += " ▾";
+        $("chip-grado").style.cursor = "pointer";
+        $("chip-grado").onclick = () => {
+          const siguiente = grados[(grados.indexOf(r.grado) + 1) % grados.length];
+          cambiarGradoDocente(siguiente);
+        };
+      }
+
+      // Nivel y racha
+      const ganadas = r.insignias.filter((i) => i.ganada).length;
+      $("nivel").textContent = `Nivel ${r.nivel}`;
+      $("nivel-detalle").textContent = `${r.nombre} · ${ganadas} de ${r.insignias.length} insignias`;
+      $("racha").innerHTML = `${ICONOS.fuego} ${r.racha} ${r.racha === 1 ? "día" : "días"}`;
+      $("racha").classList.toggle("apagada", r.racha === 0);
+      $("nivel-nota").textContent = `${r.xp} / ${r.meta} XP · faltan ${r.faltan} para el nivel ${r.nivel + 1}`;
+      // Pequeña pausa para que la barra se vea crecer
+      setTimeout(() => ($("barra-nivel").style.width = `${r.porcentaje}%`), 50);
+
+      // Continúa donde ibas
+      const c = r.continuar;
+      $("continuar").href = c.url || `/unidad.html?u=${c.unidad.id}`;
+      $("continuar-icono").innerHTML = ICONOS[c.tipo];
+      $("continuar-tipo").textContent = `${TIPOS[c.tipo]} · Unidad ${c.numUnidad}`;
+      $("continuar-titulo").textContent = c.titulo;
+      $("continuar-flecha").innerHTML = ICONOS.flecha;
+
+      // Reto de la semana
+      const reto = r.contenido.reto;
+      const resuelto = r.hechos.has(reto.id);
+      $("reto").href = reto.url || "#";
+      $("reto-xp").textContent = `Hasta +${reto.xp} XP`;
+      $("reto-titulo").textContent = reto.titulo;
+      $("reto-detalle").textContent =
+        `${reto.preguntas} preguntas · ${resuelto ? "resuelto ✓" : reto.url ? "sin resolver" : "pronto"}`;
+
+      // Lista de unidades
+      $("unidades-conteo").textContent = `${r.unidadesCompletas} de ${r.unidades.length} completas`;
+      $("unidades").innerHTML = r.unidades.map((u, i) => `
+        <li>
+          <a class="unidad" href="/unidad.html?u=${u.id}">
+            <span class="num">${String(i + 1).padStart(2, "0")}</span>
+            <div>
+              <h3>${u.titulo}</h3>
+              <p>${u.descripcion}</p>
+            </div>
+            <span></span>
+            <span class="conteo">
+              <span class="avance delgada"><div style="width:${(u.hechos / u.materiales.length) * 100}%"></div></span>
+              ${u.hechos}/${u.materiales.length}
+            </span>
+          </a>
+        </li>`).join("");
+    });
+  </script>
 </body>
 </html>

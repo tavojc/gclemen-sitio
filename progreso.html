@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f3f1">
+  <title>Progreso — gclemen.org</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body class="cargando">
+  <main class="pantalla">
+
+    <div class="barra-superior">
+      <span class="marca">gclemen.org</span>
+      <span class="chip" id="chip-grado" data-datos></span>
+    </div>
+
+    <h1 class="titulo">Mi progreso</h1>
+
+    <!-- Nivel -->
+    <div class="tarjeta-nivel" data-datos>
+      <h2 id="nivel">Nivel 1</h2>
+      <small id="nivel-nombre"></small>
+      <div class="avance"><div id="barra-nivel"></div></div>
+      <div class="nota" id="nivel-nota"></div>
+    </div>
+
+    <!-- Cifras -->
+    <div class="cifras" data-datos>
+      <div class="cifra"><div class="valor" id="xp">0</div><div class="nombre">XP en total</div></div>
+      <div class="cifra"><div class="valor" id="racha">0</div><div class="nombre">días seguidos</div></div>
+    </div>
+
+    <!-- Insignias -->
+    <div class="encabezado-seccion">
+      <h2>Insignias</h2>
+      <small id="insignias-conteo" data-datos></small>
+    </div>
+    <div class="insignias" id="insignias" data-datos></div>
+
+    <!-- Lo que ha hecho -->
+    <div class="encabezado-seccion">
+      <h2>Mis actividades</h2>
+    </div>
+    <div id="actividades" data-datos></div>
+
+  </main>
+
+  <script type="module">
+    import { iniciarPantalla, ICONOS } from "./js/app.js";
+    import { TIPOS } from "./js/contenido.js";
+
+    const $ = (id) => document.getElementById(id);
+
+    iniciarPantalla("progreso", (usuario, r) => {
+      $("chip-grado").textContent = `${r.grado}° grado`;
+      $("nivel").textContent = `Nivel ${r.nivel}`;
+      $("nivel-nombre").textContent = r.nombre;
+      $("nivel-nota").textContent = `${r.xp} / ${r.meta} XP · faltan ${r.faltan} para el nivel ${r.nivel + 1}`;
+      setTimeout(() => ($("barra-nivel").style.width = `${r.porcentaje}%`), 50);
+      $("xp").textContent = r.xp;
+      $("racha").textContent = r.racha;
+
+      // Insignias: las que no ha ganado se ven en gris
+      $("insignias-conteo").textContent =
+        `${r.insignias.filter((i) => i.ganada).length} de ${r.insignias.length}`;
+      $("insignias").innerHTML = r.insignias.map((i) => `
+        <div class="insignia ${i.ganada ? "" : "bloqueada"}">
+          <span class="emoji">${i.emoji}</span>${i.nombre}
+        </div>`).join("");
+
+      // Actividades: busca cada lección guardada en el contenido para mostrar su nombre
+      const todos = r.unidades.flatMap((u) => u.materiales);
+      const lista = $("actividades");
+      if (!r.progreso.length) {
+        lista.innerHTML = `<p class="nota" style="padding:14px 0">Aún no has hecho actividades. ¡Empieza por la primera unidad!</p>`;
+        return;
+      }
+      for (const p of r.progreso) {
+        const m = todos.find((x) => x.id === p.leccion);
+        const fila = document.createElement("div");
+        fila.className = "material";
+        fila.innerHTML = `
+          <span class="cuadro-icono ${p.completada ? "hecho" : ""}">${ICONOS[p.completada ? "hecho" : m?.tipo || "reto"]}</span>
+          <span><span class="tipo"></span><strong></strong></span>
+          <span class="estado"></span>`;
+        // textContent para los datos (más seguro que meterlos en el HTML)
+        fila.querySelector(".tipo").textContent = m ? TIPOS[m.tipo] : "Lección";
+        fila.querySelector("strong").textContent = m ? m.titulo : p.leccion;
+        fila.querySelector(".estado").textContent = `${p.completada ? "Hecho" : "En curso"} · ${p.xp || 0} XP`;
+        lista.append(fila);
+      }
+    });
+  </script>
+</body>
+</html>

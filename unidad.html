@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f3f1">
+  <title>Unidad — gclemen.org</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<!-- Esta página muestra los materiales de UNA unidad.
+     Cuál unidad: lo dice la dirección, por ejemplo unidad.html?u=g6-u1 -->
+<body class="cargando">
+  <main class="pantalla">
+
+    <div class="barra-superior">
+      <span class="marca">gclemen.org</span>
+      <span class="chip" id="chip-grado" data-datos></span>
+    </div>
+
+    <a class="volver" href="/" id="volver"></a>
+
+    <div class="saludo" id="numero" data-datos></div>
+    <h1 class="titulo" id="titulo" data-datos>Unidad</h1>
+    <p class="nota" id="descripcion" data-datos style="margin-top:-12px"></p>
+
+    <div class="encabezado-seccion">
+      <h2>Materiales</h2>
+      <small id="conteo" data-datos></small>
+    </div>
+    <div id="materiales" data-datos></div>
+
+  </main>
+
+  <script type="module">
+    import { iniciarPantalla, ICONOS } from "./js/app.js";
+    import { TIPOS } from "./js/contenido.js";
+
+    const $ = (id) => document.getElementById(id);
+    $("volver").innerHTML = `${ICONOS.atras} Inicio`;
+
+    iniciarPantalla("inicio", (usuario, r) => {
+      const id = new URLSearchParams(location.search).get("u");
+      const indice = r.unidades.findIndex((u) => u.id === id);
+      if (indice === -1) { location.href = "/"; return; }   // unidad que no existe: al inicio
+      const u = r.unidades[indice];
+
+      document.title = `${u.titulo} — gclemen.org`;
+      $("chip-grado").textContent = `${r.grado}° grado`;
+      $("numero").textContent = `Unidad ${String(indice + 1).padStart(2, "0")}`;
+      $("titulo").textContent = u.titulo;
+      $("descripcion").textContent = u.descripcion;
+      $("conteo").textContent = `${u.hechos} de ${u.materiales.length} hechos`;
+
+      $("materiales").innerHTML = u.materiales.map((m) => {
+        const hecho = r.hechos.has(m.id);
+        const estado = hecho ? "Hecho ✓" : m.url ? "" : "Pronto";
+        // Si tiene url es un enlace; si no, una fila normal
+        const etiqueta = m.url ? "a" : "div";
+        const destino = m.url ? `href="${m.url}"` : "";
+        return `
+          <${etiqueta} class="material" ${destino}>
+            <span class="cuadro-icono ${hecho ? "hecho" : ""}">${ICONOS[hecho ? "hecho" : m.tipo]}</span>
+            <span><span class="tipo">${TIPOS[m.tipo]}</span><strong>${m.titulo}</strong></span>
+            <span class="estado">${estado}</span>
+            ${m.url ? ICONOS.flecha : ""}
+          </${etiqueta}>`;
+      }).join("");
+    });
+  </script>
+</body>
+</html>

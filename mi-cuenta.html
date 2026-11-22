@@ -2,97 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fff7ec">
-  <title>Mi cuenta — gclemen.org</title>
-  <!-- Todos los estilos están ahora en estilos.css (sección 12). -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f3f1">
+  <title>Perfil — gclemen.org</title>
   <link rel="stylesheet" href="estilos.css">
 </head>
-<body>
+<body class="cargando">
+  <main class="pantalla">
 
-  <header class="encabezado">
-    <a href="/" class="logo">gclemen<span>.org</span></a>
+    <div class="barra-superior">
+      <span class="marca">gclemen.org</span>
+    </div>
+
+    <div class="saludo">Perfil</div>
+    <h1 class="titulo" id="nombre" data-datos>Cargando…</h1>
+
+    <div data-datos>
+      <div class="dato"><span>Código</span><strong id="codigo">—</strong></div>
+      <div class="dato"><span>Grado</span><strong id="grado">—</strong></div>
+      <div class="dato"><span>Nivel</span><strong id="nivel">—</strong></div>
+    </div>
+
     <!-- Importante en celulares compartidos -->
-    <button id="salir" class="boton-sesion conectado" type="button">No soy yo / Salir</button>
-  </header>
+    <p style="margin-top:30px">
+      <button id="salir" class="boton secundario" type="button">No soy yo / Cerrar sesión</button>
+    </p>
+    <p class="ayuda">Si alguien más va a usar este celular, cierra tu sesión para que no vea ni cambie tu progreso.</p>
 
-  <main>
-    <section>
-      <div class="perfil">
-        <div class="avatar" id="avatar">?</div>
-        <div>
-          <h1 id="saludo">Cargando…</h1>
-          <small id="datos"></small>
-        </div>
-      </div>
-
-      <div class="cifras">
-        <div class="bloque cifra">
-          <div class="valor" id="xp">0</div>
-          <div class="nombre">XP</div>
-        </div>
-        <div class="bloque cifra">
-          <div class="valor" id="nivel">1</div>
-          <div class="nombre">Nivel</div>
-        </div>
-      </div>
-
-      <div class="bloque" style="margin-top:16px">
-        <strong id="texto-nivel">Te faltan 100 XP para el nivel 2</strong>
-        <div class="barra"><div id="barra"></div></div>
-      </div>
-    </section>
-
-    <section>
-      <h2>Mis lecciones</h2>
-      <div class="bloque">
-        <ul class="lecciones" id="lecciones"><li>Aún no has hecho lecciones.</li></ul>
-      </div>
-    </section>
-
-    <p><a href="/" class="boton secundario">← Volver al inicio</a></p>
   </main>
 
   <script type="module">
-    import { exigirSesion, salir, leerMiProgreso, XP_POR_NIVEL } from "./js/sesion.js";
+    import { iniciarPantalla } from "./js/app.js";
+    import { salir } from "./js/sesion.js";
 
-    exigirSesion(async (usuario) => {
-      const nombre = usuario.nombre || (usuario.esDocente ? "Profe" : "Estudiante");
-      document.getElementById("saludo").textContent = `Hola, ${nombre.split(" ")[0]}`;
-      document.getElementById("avatar").textContent = nombre[0].toUpperCase();
-      document.getElementById("datos").textContent =
-        usuario.esDocente ? "Cuenta de docente" : `${usuario.codigo || ""} · Grado ${usuario.curso || ""}`;
+    const $ = (id) => document.getElementById(id);
 
-      const progreso = await leerMiProgreso();
-      const xp = progreso.reduce((suma, p) => suma + (p.xp || 0), 0);
-
-      // Nivel: cada 100 XP sube uno. El % es lo que lleva dentro del nivel actual.
-      const nivel = Math.floor(xp / XP_POR_NIVEL) + 1;
-      const enEsteNivel = xp % XP_POR_NIVEL;
-      document.getElementById("xp").textContent = xp;
-      document.getElementById("nivel").textContent = nivel;
-      document.getElementById("texto-nivel").textContent =
-        `Te faltan ${XP_POR_NIVEL - enEsteNivel} XP para el nivel ${nivel + 1}`;
-      document.getElementById("barra").style.width = `${(enEsteNivel / XP_POR_NIVEL) * 100}%`;
-
-      if (progreso.length) {
-        const lista = document.getElementById("lecciones");
-        lista.innerHTML = "";
-        for (const p of progreso) {
-          // Creamos cada fila con textContent (más seguro que armar HTML a mano)
-          const fila = document.createElement("li");
-          const titulo = document.createElement("span");
-          titulo.textContent = p.leccion;
-          const estado = document.createElement("span");
-          estado.textContent = p.completada ? `✅ ${p.xp || 0} XP` : `En curso · ${p.xp || 0} XP`;
-          if (p.completada) estado.className = "hecha";
-          fila.append(titulo, estado);
-          lista.append(fila);
-        }
-      }
+    iniciarPantalla("perfil", (usuario, r) => {
+      $("nombre").textContent = usuario.nombre || (usuario.esDocente ? "Profe" : "Estudiante");
+      $("codigo").textContent = usuario.esDocente ? "Docente" : usuario.codigo || "—";
+      $("grado").textContent = usuario.curso || `${r.grado}°`;
+      $("nivel").textContent = `${r.nivel} · ${r.nombre}`;
     });
 
-    document.getElementById("salir").addEventListener("click", async () => {
+    $("salir").addEventListener("click", async () => {
       await salir();
       location.href = "/ingresar.html";
     });
