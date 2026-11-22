@@ -1,0 +1,10 @@
+{
+  "name": "gclemen-admin",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Herramienta del docente para crear cuentas de estudiantes en gclemen.org",
+  "dependencies": {
+    "firebase-admin": "^14.5.1"
+  }
+}

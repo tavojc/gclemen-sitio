@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// ============================================================
+// Reglas de seguridad de Firestore para gclemen.org
+// ============================================================
+// Esto es lo que de verdad protege los datos. Se pegan en:
+// Consola de Firebase → Firestore Database → pestaña "Reglas" → Publicar.
+//
+// Resumen:
+// - Un estudiante solo puede leer SU perfil y leer/escribir SU progreso.
+// - Nadie puede cambiar su propio perfil (nombre, curso): eso lo hace
+//   el script de administración, que no pasa por estas reglas.
+// - El docente (marca "docente" puesta por el script) puede leer todo.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function conectado()  { return request.auth != null; }
+    function esDueno(uid) { return conectado() && request.auth.uid == uid; }
+    function esDocente()  { return conectado() && request.auth.token.docente == true; }
+
+    // Perfil: estudiantes/{uid} → nombre, curso, codigo
+    match /estudiantes/{uid} {
+      allow read:  if esDueno(uid) || esDocente();
+      allow write: if false;
+    }
+
+    // Progreso: progreso/{uid}/lecciones/{leccionId}
+    match /progreso/{uid}/lecciones/{leccionId} {
+      allow read:  if esDueno(uid) || esDocente();
+      allow write: if esDueno(uid);
+    }
+
+    // Todo lo demás queda cerrado.
+    match /{documento=**} {
+      allow read, write: if false;
+    }
+  }
+}
