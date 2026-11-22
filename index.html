@@ -6,10 +6,15 @@
   <meta name="theme-color" content="#f4f3f1">
   <title>gclemen · Matemáticas</title>
   <meta name="description" content="Guías, ejercicios y lecciones interactivas de matemáticas del profe Gustavo Clemen.">
-  <!-- ?v=3 es el número de versión. Cuando cambies estilos.css o algún .js,
-       súbelo (v=4, v=5…) en TODOS los .html y en los import de js/app.js y
+  <!-- ?v=4 es el número de versión. Cuando cambies estilos.css o algún .js,
+       súbelo (v=5, v=6…) en TODOS los .html y en los import de js/app.js y
        js/sesion.js. Así el celular sabe que hay versión nueva y no usa la vieja. -->
-  <link rel="stylesheet" href="estilos.css?v=3">
+  <link rel="stylesheet" href="estilos.css?v=4">
+  <!-- Empieza a descargar Firebase desde ya, mientras se pinta la página -->
+  <link rel="modulepreload" href="js/sesion.js?v=4">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js">
 </head>
 
 <!-- class="cargando": oculta los datos hasta que lleguen de Firebase.
@@ -68,8 +73,8 @@
   </main>
 
   <script type="module">
-    import { iniciarPantalla, ICONOS, primerNombre, cambiarGradoDocente } from "./js/app.js?v=3";
-    import { TIPOS, GRADOS } from "./js/contenido.js?v=3";
+    import { iniciarPantalla, ICONOS, primerNombre, cambiarGradoDocente } from "./js/app.js?v=4";
+    import { TIPOS, GRADOS } from "./js/contenido.js?v=4";
 
     const $ = (id) => document.getElementById(id);   // atajo para no escribir tanto
 

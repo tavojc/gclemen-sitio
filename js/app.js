@@ -6,12 +6,22 @@
 // - Calcula XP, nivel, racha e insignias a partir del progreso.
 //
 // Cada pantalla lo usa así:
-//   import { iniciarPantalla } from "./js/app.js";
+//   import { iniciarPantalla } from "./js/app.js?v=4";
 //   iniciarPantalla("inicio", (usuario, resumen) => { ...pintar... });
+//
+// PARA QUE CARGUE RÁPIDO:
+// La función "pintar" se llama DOS veces:
+//   1) Al instante, con lo último que se guardó en el celular (copia).
+//   2) Cuando llegan los datos frescos de Firebase, para actualizar.
+// Por eso "pintar" debe poder llamarse varias veces sin duplicar nada.
+// Firebase (sesion.js) se carga después de pintar la copia, porque
+// es un archivo grande y es lo que más demora.
 // ============================================================
 
-import { exigirSesion, leerMiProgreso, leerMisDias, calcularRacha, XP_POR_NIVEL } from "./sesion.js?v=3";
-import { GRADOS } from "./contenido.js?v=3";
+import { GRADOS } from "./contenido.js?v=4";
+
+const SESION_JS = "./sesion.js?v=4";        // se importa más tarde (ver arriba)
+const COPIA = "gclemen-copia";              // nombre de la copia en el celular
 
 // --- Íconos (dibujos SVG de línea, sin descargar nada) ----------
 const svg = (trazos, tam = 22) =>
@@ -34,6 +44,7 @@ export const ICONOS = {
 
 // --- Niveles -----------------------------------------------------
 // Nivel 1: 0-99 XP, nivel 2: 100-199 XP, etc.
+export const XP_POR_NIVEL = 100;
 const NOMBRES_NIVEL = ["Principiante", "Explorador", "Aprendiz", "Resolutor", "Experto", "Maestro"];
 
 export function datosNivel(xp) {
@@ -48,15 +59,31 @@ export function datosNivel(xp) {
   };
 }
 
+// --- Racha: días seguidos practicando ----------------------------
+// Cuenta hacia atrás desde hoy (o desde ayer, si hoy aún no practicó).
+const fechaTexto = (fecha) => fecha.toLocaleDateString("en-CA");   // "2026-11-22"
+
+export function calcularRacha(dias = []) {
+  const practicados = new Set(dias);
+  const fecha = new Date();
+  if (!practicados.has(fechaTexto(fecha))) fecha.setDate(fecha.getDate() - 1);
+  let racha = 0;
+  while (practicados.has(fechaTexto(fecha))) {
+    racha++;
+    fecha.setDate(fecha.getDate() - 1);
+  }
+  return racha;
+}
+
 // --- Insignias ---------------------------------------------------
 // Para agregar una, copia una línea y cambia la condición.
 export const INSIGNIAS = [
-  { emoji: "👣", nombre: "Primer paso",    gana: (r) => r.hechos.size >= 1 },
-  { emoji: "💯", nombre: "100 XP",         gana: (r) => r.xp >= 100 },
-  { emoji: "🔥", nombre: "Racha de 3",     gana: (r) => r.racha >= 3 },
+  { emoji: "👣", nombre: "Primer paso",     gana: (r) => r.hechos.size >= 1 },
+  { emoji: "💯", nombre: "100 XP",          gana: (r) => r.xp >= 100 },
+  { emoji: "🔥", nombre: "Racha de 3",      gana: (r) => r.racha >= 3 },
   { emoji: "📚", nombre: "Unidad completa", gana: (r) => r.unidadesCompletas >= 1 },
-  { emoji: "⚡", nombre: "Racha de 7",     gana: (r) => r.racha >= 7 },
-  { emoji: "🏆", nombre: "500 XP",         gana: (r) => r.xp >= 500 },
+  { emoji: "⚡", nombre: "Racha de 7",      gana: (r) => r.racha >= 7 },
+  { emoji: "🏆", nombre: "500 XP",          gana: (r) => r.xp >= 500 },
 ];
 
 // --- Grado del usuario -------------------------------------------
@@ -79,12 +106,9 @@ export function cambiarGradoDocente(grado) {
 }
 
 // --- Resumen: todo lo que necesitan las pantallas ----------------
-export async function cargarResumen(usuario) {
-  // Si falla la lectura (sin internet y sin caché), seguimos con listas vacías.
-  const [progreso, dias] = await Promise.all([
-    leerMiProgreso().catch(() => []),
-    leerMisDias(),
-  ]);
+// Recibe los datos "crudos" (perfil, progreso y días) y calcula el resto.
+// No pide nada a internet, así sirve igual para la copia y para Firebase.
+export function armarResumen(usuario, progreso, dias) {
   const grado = gradoDe(usuario);
   const contenido = GRADOS[grado];
 
@@ -115,6 +139,27 @@ export async function cargarResumen(usuario) {
   return resumen;
 }
 
+// --- Copia en el celular -----------------------------------------
+// Guarda lo último que llegó de Firebase para mostrarlo al instante
+// la próxima vez. Se borra al cerrar sesión (y en la página de ingreso).
+function leerCopia() {
+  try {
+    return JSON.parse(localStorage.getItem(COPIA));
+  } catch (e) {
+    return null;
+  }
+}
+
+function guardarCopia(datos) {
+  try {
+    localStorage.setItem(COPIA, JSON.stringify(datos));
+  } catch (e) { /* sin espacio: no pasa nada, solo no hay copia */ }
+}
+
+export function borrarCopia() {
+  localStorage.removeItem(COPIA);
+}
+
 // --- Barra de abajo ----------------------------------------------
 function pintarNav(activo) {
   const pestañas = [
@@ -142,14 +187,53 @@ function vigilarConexion() {
 }
 
 // --- Arranque de cada pantalla -----------------------------------
-export function iniciarPantalla(activo, pintar) {
+export async function iniciarPantalla(activo, pintar) {
   if (activo) pintarNav(activo);
   vigilarConexion();
+
+  // 1) Al instante: la copia guardada en el celular (si hay).
+  const copia = leerCopia();
+  if (copia) {
+    pintar(copia.usuario, armarResumen(copia.usuario, copia.progreso, copia.dias));
+    document.body.classList.remove("cargando");
+  }
+
+  // 2) Ahora sí cargamos Firebase y pedimos los datos frescos.
+  const { auth, exigirSesion, leerMiProgreso, leerMisDias } = await import(SESION_JS);
+
+  // Apenas Firebase sabe quién está conectado, pedimos el progreso y los
+  // días, SIN esperar el perfil: así las consultas viajan al mismo tiempo.
+  const pedidos = auth.authStateReady().then(() =>
+    Promise.all([
+      leerMiProgreso().catch(() => []),        // sin internet y sin caché: vacío
+      leerMisDias(),
+    ])
+  );
+
   exigirSesion(async (usuario) => {
-    const resumen = await cargarResumen(usuario);
-    await pintar(usuario, resumen);
-    document.body.classList.remove("cargando");   // ya se puede mostrar todo
+    // Si la copia era de otra persona (celular compartido), no se usa.
+    if (copia && copia.usuario.uid !== usuario.uid) borrarCopia();
+
+    const [progreso, dias] = await pedidos;
+
+    // Si no llegó nada pero la copia tenía datos (por ejemplo, sin señal),
+    // nos quedamos con la copia en vez de borrar lo que ya se ve.
+    if (!progreso.length && copia?.progreso.length && copia.usuario.uid === usuario.uid && !navigator.onLine) {
+      return;
+    }
+
+    guardarCopia({ usuario, progreso, dias });
+    await pintar(usuario, armarResumen(usuario, progreso, dias));
+    document.body.classList.remove("cargando");
   });
+}
+
+// Cierra la sesión y borra la copia (importante en celulares compartidos).
+export async function cerrarSesion() {
+  borrarCopia();
+  const { salir } = await import(SESION_JS);
+  await salir();
+  location.href = "/ingresar.html";
 }
 
 // Primer nombre: "Juan Pablo Pérez" → "Juan"

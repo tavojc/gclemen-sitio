@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f4f3f1">
   <title>Unidad — gclemen.org</title>
-  <link rel="stylesheet" href="estilos.css?v=3">
+  <link rel="stylesheet" href="estilos.css?v=4">
+  <!-- Empieza a descargar Firebase desde ya, mientras se pinta la página -->
+  <link rel="modulepreload" href="js/sesion.js?v=4">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js">
+  <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js">
 </head>
 <!-- Esta página muestra los materiales de UNA unidad.
      Cuál unidad: lo dice la dirección, por ejemplo unidad.html?u=g6-u1 -->
@@ -32,8 +37,8 @@
   </main>
 
   <script type="module">
-    import { iniciarPantalla, ICONOS } from "./js/app.js?v=3";
-    import { TIPOS } from "./js/contenido.js?v=3";
+    import { iniciarPantalla, ICONOS } from "./js/app.js?v=4";
+    import { TIPOS } from "./js/contenido.js?v=4";
 
     const $ = (id) => document.getElementById(id);
     $("volver").innerHTML = `${ICONOS.atras} Inicio`;

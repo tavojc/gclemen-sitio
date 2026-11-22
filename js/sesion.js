@@ -16,7 +16,7 @@ import {
   doc, getDoc, setDoc, collection, getDocs, serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
-import { firebaseConfig, DOMINIO_ESTUDIANTES } from "./firebase-config.js?v=3";
+import { firebaseConfig, DOMINIO_ESTUDIANTES } from "./firebase-config.js?v=4";
 
 // --- Arranque ------------------------------------------------
 const app = initializeApp(firebaseConfig);
@@ -78,15 +78,16 @@ export function alCambiarSesion(funcion) {
   return onAuthStateChanged(auth, async (user) => {
     if (!user) return funcion(null);
 
-    // ¿Es docente? Esa marca la pone el script de administración.
-    const token = await user.getIdTokenResult();
+    // Pedimos al mismo tiempo (no uno después del otro):
+    // - la marca de docente (la pone el script de administración)
+    // - el perfil del estudiante
+    const [token, perfil] = await Promise.all([
+      user.getIdTokenResult(),
+      getDoc(doc(db, "estudiantes", user.uid))
+        .then((snap) => (snap.exists() ? snap.data() : {}))
+        .catch(() => ({})),                // sin conexión y sin caché: sin perfil
+    ]);
     const esDocente = token.claims.docente === true;
-
-    let perfil = {};
-    try {
-      const snap = await getDoc(doc(db, "estudiantes", user.uid));
-      if (snap.exists()) perfil = snap.data();
-    } catch (e) { /* sin conexión y sin caché: seguimos sin perfil */ }
 
     funcion({ uid: user.uid, esDocente, ...perfil });
   });
@@ -107,9 +108,6 @@ export function exigirSesion(funcion) {
 }
 
 // --- Progreso de las lecciones -------------------------------
-// Cuántos XP se necesitan para subir de nivel (lo usan el menú y Mi cuenta).
-export const XP_POR_NIVEL = 100;
-
 // Ejemplo desde una lección:
 //   guardarProgreso("ecuaciones-balanza", { xp: 30, completada: true });
 export async function guardarProgreso(leccionId, datos) {
@@ -136,19 +134,7 @@ async function registrarDia() {
   await setDoc(ref, { dias: arrayUnion(hoy()) }, { merge: true });
 }
 
-// Cuenta cuántos días seguidos hay, terminando hoy o ayer
-// (si no ha practicado hoy, la racha de ayer todavía cuenta).
-export function calcularRacha(dias = []) {
-  const practicados = new Set(dias);
-  const fecha = new Date();
-  if (!practicados.has(hoy())) fecha.setDate(fecha.getDate() - 1);
-  let racha = 0;
-  while (practicados.has(fecha.toLocaleDateString("en-CA"))) {
-    racha++;
-    fecha.setDate(fecha.getDate() - 1);
-  }
-  return racha;
-}
+// (La racha se calcula en app.js con calcularRacha.)
 
 // Devuelve una lista con el progreso de todas las lecciones del estudiante.
 export async function leerMiProgreso() {
