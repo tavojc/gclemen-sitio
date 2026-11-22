@@ -106,6 +106,9 @@ export function exigirSesion(funcion) {
 }
 
 // --- Progreso de las lecciones -------------------------------
+// Cuántos XP se necesitan para subir de nivel (lo usan el menú y Mi cuenta).
+export const XP_POR_NIVEL = 100;
+
 // Ejemplo desde una lección:
 //   guardarProgreso("ecuaciones-balanza", { xp: 30, completada: true });
 export async function guardarProgreso(leccionId, datos) {

@@ -18,6 +18,9 @@
   <meta name="description" content="Guías, ejercicios y lecciones interactivas de matemáticas del profe Gustavo Clemen.">
   <!-- La descripción que Google muestra debajo del título. -->
 
+  <meta name="theme-color" content="#fff7ec">
+  <!-- Color de la barra del navegador en el celular. -->
+
   <link rel="stylesheet" href="estilos.css">
   <!-- Conecta este HTML con el archivo de estilos (colores, tamaños, posiciones). -->
 </head>
@@ -26,14 +29,12 @@
   <!-- 4) <body> = todo lo que SÍ se ve en la pantalla. -->
 
   <header class="encabezado">
-    <!-- <header> es la parte de arriba: logo y menú. -->
-    <a href="index.html" class="logo">gclemen<span>.org</span></a>
-    <nav>
-      <!-- <nav> agrupa los enlaces de navegación. Cada href="#..." salta a una sección. -->
-      <a href="#grados">Grados</a>
-      <a href="#recursos">Recursos</a>
-      <a href="#sobre-mi">Sobre mí</a>
-    </nav>
+    <!-- <header> es la parte de arriba: logo y botón de ingreso. -->
+    <a href="/" class="logo">gclemen<span>.org</span></a>
+
+    <!-- Botón de ingreso. Si el estudiante ya entró, js/menu-sesion.js
+         lo cambia por su nombre y lo lleva a "Mi cuenta". -->
+    <a id="boton-sesion" class="boton-sesion" href="/ingresar.html">Ingresar</a>
   </header>
 
   <main>
@@ -41,30 +42,46 @@
 
     <section class="portada">
       <!-- <section> agrupa una parte de la página con un mismo tema. -->
-      <h1>Matemáticas paso a paso</h1>
-      <!-- <h1> es el título más importante. Solo debe haber uno por página. -->
+      <span class="etiqueta">Profe Gustavo · Matemáticas</span>
+      <h1>Matemáticas <em>paso a paso</em></h1>
+      <!-- <h1> es el título más importante. Solo debe haber uno por página.
+           <em> resalta una parte; en estilos.css le damos el color de acento. -->
       <p>Guías, ejercicios y lecciones interactivas para que practiques a tu ritmo, desde el celular o el computador.</p>
       <a href="#grados" class="boton">Empezar</a>
+
+      <!-- Franja de progreso: está oculta (hidden) y solo aparece
+           si hay sesión abierta. La llena js/menu-sesion.js. -->
+      <a id="franja-progreso" class="bloque franja-progreso" href="/mi-cuenta.html" hidden>
+        <span>
+          <strong id="franja-nombre">Hola</strong>
+          <small id="franja-nivel">Nivel 1</small>
+        </span>
+        <span class="chip-xp" id="franja-xp">0 XP</span>
+      </a>
     </section>
 
     <section id="grados">
-      <!-- id="grados" es el "nombre" de esta sección; el menú lo usa para saltar aquí. -->
+      <!-- id="grados" es el "nombre" de esta sección; el botón Empezar salta aquí. -->
       <h2>Elige tu grado</h2>
       <div class="tarjetas">
         <!-- Cada <article> es una tarjeta. Para agregar un grado, copia una tarjeta completa. -->
         <article class="tarjeta">
+          <span class="numero">6°</span>
           <h3>Sexto</h3>
           <p>Números naturales, fracciones y geometría básica.</p>
         </article>
         <article class="tarjeta">
+          <span class="numero">7°</span>
           <h3>Séptimo</h3>
           <p>Números enteros, proporcionalidad y ecuaciones sencillas.</p>
         </article>
         <article class="tarjeta">
+          <span class="numero">8°</span>
           <h3>Octavo</h3>
           <p>Expresiones algebraicas, productos notables y factorización.</p>
         </article>
         <article class="tarjeta">
+          <span class="numero">9°</span>
           <h3>Noveno</h3>
           <p>Sistemas de ecuaciones, funciones y estadística.</p>
         </article>
@@ -74,16 +91,18 @@
     <section id="recursos">
       <h2>Recursos</h2>
       <ul class="lista">
-        <!-- <ul> es una lista con viñetas; cada <li> es un elemento de la lista. -->
-        <li>📄 Guías de clase en PDF <em>(muy pronto)</em></li>
-        <li>🧮 Lecciones interactivas <em>(muy pronto)</em></li>
-        <li>🎥 Videos de mi canal de YouTube <em>(muy pronto)</em></li>
+        <!-- <ul> es una lista; cada <li> es un elemento de la lista. -->
+        <li><span class="icono">📄</span> Guías de clase en PDF <em>Pronto</em></li>
+        <li><span class="icono">🧮</span> Lecciones interactivas <em>Pronto</em></li>
+        <li><span class="icono">🎥</span> Videos de mi canal de YouTube <em>Pronto</em></li>
       </ul>
     </section>
 
     <section id="sobre-mi">
       <h2>Sobre mí</h2>
-      <p>Soy Gustavo Clemen, docente de matemáticas e ingeniero electrónico. Creé este sitio para que mis estudiantes tengan un lugar donde repasar y practicar cuando lo necesiten.</p>
+      <div class="bloque">
+        <p style="margin:0">Soy Gustavo Clemen, docente de matemáticas e ingeniero electrónico. Creé este sitio para que mis estudiantes tengan un lugar donde repasar y practicar cuando lo necesiten.</p>
+      </div>
     </section>
 
   </main>
@@ -93,5 +112,8 @@
     <p>© 2026 Gustavo Clemen · gclemen.org</p>
   </footer>
 
+  <!-- El script va al final para que la página aparezca primero.
+       type="module" permite usar import/export entre archivos .js -->
+  <script type="module" src="js/menu-sesion.js"></script>
 </body>
 </html>

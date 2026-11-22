@@ -3,53 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff7ec">
   <title>Ingresar — gclemen.org</title>
+  <!-- Todos los estilos están ahora en estilos.css (sección 11). -->
   <link rel="stylesheet" href="estilos.css">
-  <style>
-    /* Estilos solo de esta página (para no chocar con estilos.css) */
-    .caja-ingreso {
-      max-width: 360px; margin: 3rem auto; padding: 2rem;
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,.08);
-      font-family: system-ui, sans-serif;
-    }
-    .caja-ingreso h1 { margin: 0 0 .25rem; font-size: 1.6rem; }
-    .caja-ingreso p.sub { margin: 0 0 1.5rem; color: #666; }
-    .caja-ingreso label { display: block; font-weight: 600; margin: 1rem 0 .35rem; }
-    .caja-ingreso input {
-      width: 100%; box-sizing: border-box; padding: .8rem; font-size: 1.2rem;
-      border: 2px solid #ddd; border-radius: 10px;
-    }
-    .caja-ingreso input:focus { outline: none; border-color: #2b6cb0; }
-    #pin { letter-spacing: .4em; }
-    .caja-ingreso button {
-      width: 100%; margin-top: 1.5rem; padding: .9rem; font-size: 1.1rem;
-      border: 0; border-radius: 10px; background: #2b6cb0; color: #fff; cursor: pointer;
-    }
-    .caja-ingreso button:disabled { opacity: .6; cursor: wait; }
-    #mensaje { min-height: 1.5em; margin-top: 1rem; color: #c53030; text-align: center; }
-    .ayuda { margin-top: 1.5rem; font-size: .9rem; color: #777; text-align: center; }
-  </style>
 </head>
 <body>
 
-  <main class="caja-ingreso">
+  <header class="encabezado">
+    <a href="/" class="logo">gclemen<span>.org</span></a>
+  </header>
+
+  <main class="pagina-centrada">
+    <span class="etiqueta">Estudiantes</span>
     <h1>Ingresar</h1>
     <p class="sub">Escribe el código y el PIN que te dio el profe.</p>
 
-    <form id="formulario">
-      <label for="codigo">Código</label>
-      <!-- autocapitalize: el celular pone mayúsculas solo -->
-      <input id="codigo" type="text" placeholder="G7-014"
-             autocomplete="username" autocapitalize="characters" required>
+    <form id="formulario" class="bloque">
+      <div class="campo">
+        <label for="codigo">Código</label>
+        <!-- autocapitalize: el celular pone mayúsculas solo -->
+        <input id="codigo" type="text" placeholder="G7-014"
+               autocomplete="username" autocapitalize="characters" required>
+      </div>
 
-      <label for="pin">PIN</label>
-      <!-- inputmode="numeric": el celular muestra el teclado de números -->
-      <input id="pin" type="password" placeholder="••••••"
-             inputmode="numeric" autocomplete="current-password" required>
+      <div class="campo">
+        <label for="pin">PIN</label>
+        <!-- inputmode="numeric": el celular muestra el teclado de números -->
+        <input id="pin" type="password" placeholder="••••••"               inputmode="numeric" autocomplete="current-password" required>
+      </div>
 
-      <button id="boton" type="submit">Entrar</button>
-      <div id="mensaje" role="alert"></div>
+      <button id="boton" class="boton ancho" type="submit">Entrar</button>
+      <div id="mensaje" class="mensaje" role="alert"></div>
     </form>
 
     <p class="ayuda">¿Olvidaste tu PIN? Pídele al profe uno nuevo.<br>
