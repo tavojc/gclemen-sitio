@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f4f3f1">
   <title>Ingresar — gclemen.org</title>
   <meta name="description" content="Matemáticas con el profe Gustavo Clemen. Ingresa con tu código y PIN.">
-  <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="estilos.css?v=3">
 </head>
 <body>
   <!-- Todas las demás páginas mandan aquí si no hay sesión abierta. -->
@@ -44,7 +44,7 @@
   </main>
 
   <script type="module">
-    import { ingresar, alCambiarSesion } from "./js/sesion.js";
+    import { ingresar, alCambiarSesion } from "./js/sesion.js?v=3";
 
     // A dónde ir después de entrar: la página que pidió el ingreso, o el inicio.
     // Solo aceptamos rutas de este mismo sitio (que empiecen con "/").

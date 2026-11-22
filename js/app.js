@@ -10,8 +10,8 @@
 //   iniciarPantalla("inicio", (usuario, resumen) => { ...pintar... });
 // ============================================================
 
-import { exigirSesion, leerMiProgreso, leerMisDias, calcularRacha, XP_POR_NIVEL } from "./sesion.js";
-import { GRADOS } from "./contenido.js";
+import { exigirSesion, leerMiProgreso, leerMisDias, calcularRacha, XP_POR_NIVEL } from "./sesion.js?v=3";
+import { GRADOS } from "./contenido.js?v=3";
 
 // --- Íconos (dibujos SVG de línea, sin descargar nada) ----------
 const svg = (trazos, tam = 22) =>

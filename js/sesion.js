@@ -16,7 +16,7 @@ import {
   doc, getDoc, setDoc, collection, getDocs, serverTimestamp, arrayUnion
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
-import { firebaseConfig, DOMINIO_ESTUDIANTES } from "./firebase-config.js";
+import { firebaseConfig, DOMINIO_ESTUDIANTES } from "./firebase-config.js?v=3";
 
 // --- Arranque ------------------------------------------------
 const app = initializeApp(firebaseConfig);
