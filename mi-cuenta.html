@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi cuenta — gclemen.org</title>
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    .cuenta { max-width: 560px; margin: 2rem auto; padding: 1.5rem; font-family: system-ui, sans-serif; }
+    .cabecera { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .cabecera h1 { margin: 0; font-size: 1.5rem; }
+    .cabecera small { color: #666; }
+    #salir { padding: .6rem 1rem; border: 2px solid #c53030; color: #c53030;
+             background: #fff; border-radius: 10px; cursor: pointer; font-size: 1rem; }
+    .tarjeta { margin-top: 1.5rem; padding: 1.25rem; border-radius: 14px; background: #f5f8fc; }
+    .xp { font-size: 2.2rem; font-weight: 700; color: #2b6cb0; }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <main class="cuenta">
+    <div class="cabecera">
+      <div>
+        <h1 id="saludo">Cargando…</h1>
+        <small id="datos"></small>
+      </div>
+      <!-- Importante en celulares compartidos -->
+      <button id="salir">No soy yo / Salir</button>
+    </div>
+
+    <section class="tarjeta">
+      <div>Puntos acumulados</div>
+      <div class="xp" id="xp">0 XP</div>
+    </section>
+
+    <section class="tarjeta">
+      <strong>Lecciones</strong>
+      <ul id="lecciones"><li>Aún no has hecho lecciones.</li></ul>
+    </section>
+
+    <p><a href="/">← Volver al inicio</a></p>
+  </main>
+
+  <script type="module">
+    import { exigirSesion, salir, leerMiProgreso } from "./js/sesion.js";
+
+    exigirSesion(async (usuario) => {
+      const nombre = usuario.nombre || (usuario.esDocente ? "Profe" : "estudiante");
+      document.getElementById("saludo").textContent = `Hola, ${nombre}`;
+      document.getElementById("datos").textContent =
+        usuario.esDocente ? "Cuenta de docente" : `${usuario.codigo || ""} · Grado ${usuario.curso || ""}`;
+
+      const progreso = await leerMiProgreso();
+      const total = progreso.reduce((suma, p) => suma + (p.xp || 0), 0);
+      document.getElementById("xp").textContent = `${total} XP`;
+
+      if (progreso.length) {
+        document.getElementById("lecciones").innerHTML = progreso
+          .map((p) => `<li>${p.leccion} — ${p.completada ? "✅ completada" : "en curso"} (${p.xp || 0} XP)</li>`)
+          .join("");
+      }
+    });
+
+    document.getElementById("salir").addEventListener("click", async () => {
+      await salir();
+      location.href = "/ingresar.html";
+    });
+  </script>
+</body>
+</html>
